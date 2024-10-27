@@ -3,6 +3,7 @@ import {TicketRepository} from "@/repositories/TicketRepository";
 import QRCode from 'qrcode';
 import {GetPublicKeyOrSecret, SigningKeyCallback, verify} from "jsonwebtoken";
 import {JsonWebKey} from "crypto";
+import { ORIGIN } from '@/utils/config';
 
 type RequestData = {
     vatin?: string;
@@ -84,7 +85,7 @@ export default async function handler(
 
     const ticket = await repo.createTicket(data.vatin, data.firstName, data.lastName);
 
-    const qrFile = await QRCode.toBuffer(`https://www.google.com/search?q=${ticket.id}`);
+    const qrFile = await QRCode.toBuffer(`${ORIGIN}/ticket/${ticket.id}`);
 
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Content-Disposition', `attachment; filename=${ticket.id}.png`);
